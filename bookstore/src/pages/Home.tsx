@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar";
 import BannerBackground from "../images/banner-background.png";
 import BannerImage from "../images/banner-image.png";
 import { FiArrowRight } from "react-icons/fi";

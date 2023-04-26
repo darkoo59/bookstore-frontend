@@ -10,6 +10,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import Registration from './pages/Registration';
 
 
 const router = createBrowserRouter([
@@ -25,6 +26,11 @@ const router = createBrowserRouter([
         path: "books",
         element: <Books />
       },
+      {
+        index: true,
+        path: "registration",
+        element: <Registration />
+      }
     ]
   },
 ]);

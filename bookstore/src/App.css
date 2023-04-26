@@ -30,6 +30,12 @@
     justify-content: flex-start;
   }
 
+  .registration-container{
+    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
   body {
     max-width: 100%;
     overflow-x: hidden;
@@ -38,6 +44,16 @@
   body {
     background-color: #f6f6f6;
   }
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-gap: 20px;
+  }
+
+.label {
+  padding-bottom: 20px;
+}
   
   nav {
     display: flex;
