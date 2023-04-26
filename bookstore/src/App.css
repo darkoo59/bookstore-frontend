@@ -18,6 +18,18 @@
     max-width: 1900px;
     margin: 0rem auto;
   }
+  .card{
+    width: 32%;
+    margin-bottom: 20px;
+    margin-right: 20px;
+  }
+  .card-container{
+    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
   body {
     max-width: 100%;
     overflow-x: hidden;
