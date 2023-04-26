@@ -145,6 +145,22 @@
     align-items: center;
     justify-content: center;
   }
+
+  .secondary-button-login {
+    padding: 1rem 2.5rem;
+    background-color: #fe9e0d;
+    outline: none;
+    border: none;
+    border-radius: 5rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    transition: 0.2s;
+    display: flex;
+    align-items: stretch;
+    justify-content: right;
+  }
   .secondary-button svg {
     margin-left: 0.75rem;
     font-size: 1.5rem;

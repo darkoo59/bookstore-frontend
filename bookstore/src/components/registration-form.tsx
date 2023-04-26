@@ -102,7 +102,9 @@ const RegistrationForm = ({onSubmit}: Props) => {
 
       </div>
       <Box marginTop="20px">
+        <div>
         <button className="secondary-button">Register</button>
+        </div>
       </Box>
     </form>
   )
