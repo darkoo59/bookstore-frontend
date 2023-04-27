@@ -5,14 +5,17 @@ import { HiOutlineBars3 } from "react-icons/hi2";
 import { Box, Drawer, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import HomeIcon  from "@mui/icons-material/Home";
 import InfoIcon from "@mui/icons-material/Info";
+import LogoutIcon from '@mui/icons-material/Logout';
 import CommentRoundedIcon  from "@mui/icons-material/CommentRounded";
 import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import { List } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-
+import {useIsAuthenticated} from 'react-auth-kit';
+import { useSignOut } from 'react-auth-kit'
 const Navbar = () => {
-
+  const isAuthenticated = useIsAuthenticated()
+  const signOut = useSignOut()
   const [openMenu, setOpenMenu] = React.useState(false);
   const menuOptions = [
     {
@@ -36,9 +39,11 @@ const Navbar = () => {
         </div>
         <div className="navbar-links-container">
           <Link to="/">Home</Link>
+          {/* {isAuthenticated() ? <Link to="/books">Books</Link> : null} */}
           <Link to="/books">Books</Link>
-          <Link to="/registration">Registration</Link>
-          <Link to="/login">Login</Link>
+          {!isAuthenticated() ? <Link to="/registration">Registration</Link> : null}
+          {!isAuthenticated() ? <Link to="/login">Login</Link> : null}
+          {isAuthenticated() ? <LogoutIcon className='logout-icon' onClick={() => signOut()}></LogoutIcon> : null}
           {/* <a href="">
             <BsCart2 className="navbar-cart-icon"/>
           </a> */}

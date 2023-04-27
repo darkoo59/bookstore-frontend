@@ -5,18 +5,30 @@ import BannerBackground from "../images/banner-background.png";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { API_BASE_URL } from "../config";
+import { useSignIn } from "react-auth-kit";
+import { useNavigate } from "react-router-dom";
 const Login = () => {
   interface ErrorResponse {
     errorMessage: string;
   }
+  const navigate = useNavigate();
+  const signIn = useSignIn();
   const login = async (data: any) => {
     try {
       const response = await axios.post(API_BASE_URL+'/user/login', data, { withCredentials: true })
       if (response.status === HttpStatusCode.Ok) {
         const respData = response.data
-        axios.defaults.headers.common['Authorization'] = `Bearer ${respData['access_token']}`
-        window.location.replace('/');
+        console.log(response.data['accessToken'])
+        signIn({
+          token: response.data['accessToken'],
+          expiresIn: 3600,
+          tokenType: "Bearer",
+          authState: { email: data.email }
+        });
         toast.success('Successfully logged in', {position: toast.POSITION.BOTTOM_CENTER});
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
       }
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

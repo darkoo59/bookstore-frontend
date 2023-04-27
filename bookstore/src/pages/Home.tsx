@@ -1,8 +1,10 @@
+import { useIsAuthenticated } from "react-auth-kit";
 import Navbar from "../components/navbar";
 import BannerBackground from "../images/banner-background.png";
 import BannerImage from "../images/banner-image.png";
 import { FiArrowRight } from "react-icons/fi";
 const Home = () => {
+    const isAuthenticated = useIsAuthenticated()
   return (
     <div className="home-container">
         <Navbar/>
@@ -14,12 +16,12 @@ const Home = () => {
                 <h1 className="primary-heading">
                     Your Favourite Bookstore On The Market
                 </h1>
-                <p className="primary-text">
+                {!isAuthenticated() ? (<div className="home-text-section"><p className="primary-text">
                     Register now and start using our bookstore system for free.
                 </p>
                 <button className="secondary-button">
                     Register now <FiArrowRight />
-                </button>
+                </button></div>) : null}
             </div>
         </div>
     </div>

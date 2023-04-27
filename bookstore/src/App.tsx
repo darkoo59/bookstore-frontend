@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import Registration from './pages/Registration';
 import Login from './pages/Login';
+import { RequireAuth } from 'react-auth-kit';
 
 
 const router = createBrowserRouter([

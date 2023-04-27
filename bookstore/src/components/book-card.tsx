@@ -3,8 +3,10 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import { useIsAuthenticated } from "react-auth-kit";
 
 export function BookCard({ book } : {book : Book}) {
+  const isAuthenticated = useIsAuthenticated()
     return (
       <Card variant="outlined" className="card">
         <CardContent>
@@ -24,11 +26,11 @@ export function BookCard({ book } : {book : Book}) {
             <i>Number of pages: </i>{book.numberOfPages}
           </Typography>
         </CardContent>
-        <CardActions>
+        {isAuthenticated() ? <CardActions>
         <button className="secondary-button">
                     Add to cart
                 </button>
-        </CardActions>
+        </CardActions> : null}
       </Card>
     );
   }
