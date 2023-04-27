@@ -146,6 +146,21 @@
     justify-content: center;
   }
 
+  .secondary-button-cart {
+    padding: 1rem 2.5rem;
+    background-color: #fe9e0d;
+    outline: none;
+    border: none;
+    border-radius: 5rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    transition: 0.2s;
+
+    width:  100;
+  }
+
   .secondary-button-login {
     padding: 1rem 2.5rem;
     background-color: #fe9e0d;
