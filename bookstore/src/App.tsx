@@ -15,6 +15,8 @@ import Registration from './pages/Registration';
 import Login from './pages/Login';
 import { RequireAuth } from 'react-auth-kit';
 import { ShoppingCartProvider } from './context/ShoppingCartContext';
+import './auth/axiosConfig';
+import MyOrders from './pages/MyOrders';
 
 
 const router = createBrowserRouter([
@@ -40,6 +42,11 @@ const router = createBrowserRouter([
         path: "login",
         element: <Login />
       },
+      {
+        index: true,
+        path: "orders",
+        element: <MyOrders />
+      }
     ]
   },
 ]);

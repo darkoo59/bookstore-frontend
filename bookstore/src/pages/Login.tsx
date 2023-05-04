@@ -18,7 +18,6 @@ const Login = () => {
       const response = await axios.post(API_BASE_URL+'/user/login', data, { withCredentials: true })
       if (response.status === HttpStatusCode.Ok) {
         const respData = response.data
-        console.log(response.data['accessToken'])
         signIn({
           token: response.data['accessToken'],
           expiresIn: 3600,

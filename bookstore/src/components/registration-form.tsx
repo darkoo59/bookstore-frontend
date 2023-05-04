@@ -15,7 +15,6 @@ const RegistrationForm = ({onSubmit}: Props) => {
   const handleSubmit = (e: any) => {
     if(data.gender == null || data.gender == undefined)
     data.gender = 0;
-    console.log(data)
     e.preventDefault();
     onSubmit(data)
   }

@@ -45,6 +45,7 @@ const Navbar = () => {
           <Link to="/books">Books</Link>
           {!isAuthenticated() ? <Link to="/registration">Registration</Link> : null}
           {!isAuthenticated() ? <Link to="/login">Login</Link> : null}
+          {isAuthenticated() ? <Link to="/orders">My orders</Link> : null}
           {isAuthenticated() && cartQuantity > 0 ?(
           <Button
             onClick={openCart}

@@ -17,7 +17,6 @@ const Registration = () => {
       }
 
       const onRegistrationSubmit = async (user: User) => {
-        console.log(user)
         try {
           await axios.post(API_BASE_URL+'/user/register', user)
           toast.success('User successfully registered. Redirecting to login in 5 seconds!', {position: toast.POSITION.BOTTOM_CENTER});
