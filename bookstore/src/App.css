@@ -18,6 +18,24 @@
     max-width: 1900px;
     margin: 0rem auto;
   }
+  .card{
+    width: 32%;
+    margin-bottom: 20px;
+    margin-right: 20px;
+  }
+  .card-container{
+    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .registration-container{
+    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
   body {
     max-width: 100%;
     overflow-x: hidden;
@@ -26,6 +44,16 @@
   body {
     background-color: #f6f6f6;
   }
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-gap: 20px;
+  }
+
+.label {
+  padding-bottom: 20px;
+}
   
   nav {
     display: flex;
@@ -116,6 +144,37 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .secondary-button-cart {
+    padding: 1rem 2.5rem;
+    background-color: #fe9e0d;
+    outline: none;
+    border: none;
+    border-radius: 5rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    transition: 0.2s;
+
+    width:  100;
+  }
+
+  .secondary-button-login {
+    padding: 1rem 2.5rem;
+    background-color: #fe9e0d;
+    outline: none;
+    border: none;
+    border-radius: 5rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    transition: 0.2s;
+    display: flex;
+    align-items: stretch;
+    justify-content: right;
   }
   .secondary-button svg {
     margin-left: 0.75rem;
