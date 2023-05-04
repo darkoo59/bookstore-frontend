@@ -12,18 +12,25 @@ import { Book } from '../model/book';
 import { BookCard } from '../components/book-card';
 import Navbar from "../components/navbar";
 import { useIsAuthenticated } from "react-auth-kit";
+import { OrderCard } from "../components/order-card";
+import { MyOrder } from "../model/my-order";
 
-const Books = () => {
-    const [books, setBooks] = React.useState<Book[]>([]);
+const MyOrders = () => {
+     const [orders, setOrders] = React.useState<MyOrder[]>([]);
     
     React.useEffect(() => {
-      fetchBooks();
+      fetchOrders();
     }, []);
   
-    const fetchBooks = async () => {
-      const response = await fetch(API_BASE_URL+'/book');
-      const data = await response.json();
-      setBooks(data);
+    const fetchOrders = async () => {
+        const token = document.cookie.match('(^|;)\\s*' + "accessToken" + '\\s*=\\s*([^;]+)')?.pop() || '';
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}`, },
+        };
+        const response = await fetch(API_BASE_URL+'/order/my-orders',requestOptions);
+        const data = await response.json();
+        setOrders(data);
     }
   return (
     <div>
@@ -38,14 +45,14 @@ const Books = () => {
     <div>
     </div>
     <div className="card-container">
-        {books.map((book) => (
-            <React.Fragment key={book.id}>
-            <BookCard book={book}/>
+    {orders.map((order) => (
+            <React.Fragment key={order.id}>
+                <OrderCard order={order} />
             </React.Fragment>
         ))}
-        </div>
+        </div> 
     </div>
   );
 };
 
-export default Books;
+export default MyOrders;

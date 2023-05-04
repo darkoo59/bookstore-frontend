@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import { AuthProvider } from 'react-auth-kit';
 import { BrowserRouter } from 'react-router-dom';
+import './auth/axiosConfig';
+import refreshApi from './auth/refreshApi';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
