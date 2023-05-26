@@ -1,4 +1,4 @@
-import { CardContent, Chip, Typography, Stack} from "@mui/material";
+import { CardContent, Chip, Typography, Stack, Rating} from "@mui/material";
 import Card from '@mui/material/Card';
 import { formatCurrency } from "../utilities/formatCurrency";
 import { BookWithCharacteristics } from "../model/bookWithCharacteristics";
@@ -9,11 +9,8 @@ interface BookWithCharacteristicsCardProps {
 }
 
 const BookWithCharacteristicsCard = ({ bookWithCharacteristics } : BookWithCharacteristicsCardProps ) => {
-  //const isAuthenticated = useIsAuthenticated()
-  //const {getItemQuantity, increaseCartQuantity, decreaseCartQuantity, removeFromCart} = useShoppingCart()
-  //let quantity = getItemQuantity(bookWithCharacteristics.book.id)
     return (
-      <Card variant="outlined" className="card">
+      <Card variant="outlined" className="card" sx={{ minWidth: '450px', minHeight: '300px', mx: 'auto'}}>
         <CardContent>
           <Stack direction="row" spacing={1} sx={{ mb: 3 }}  useFlexGap flexWrap="wrap">
             { bookWithCharacteristics.suggested && <Chip label="Suggested" color="primary" icon={<StarRateIcon/>}/>}
@@ -40,6 +37,7 @@ const BookWithCharacteristicsCard = ({ bookWithCharacteristics } : BookWithChara
           <Typography variant="body2">
             <i>Number of pages: </i>{bookWithCharacteristics.book.numberOfPages}
           </Typography>
+          <Rating name="size-small"  defaultValue={bookWithCharacteristics.book.averageRating} precision={0.1} disabled />
         </CardContent>
         {/* { {isAuthenticated() ? (<CardActions className="d-flex flex-column">
           <div className="mt-auto">{quantity === 0 ? (

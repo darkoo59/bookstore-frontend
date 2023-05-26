@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { BookWithCharacteristics } from "../model/bookWithCharacteristics";
 import BookWithCharacteristicsCard from "../components/bookWithCharacteristics-card";
 import { RatingDTO } from "../dto/ratingDTO";
+import { Container, Grid } from "@mui/material";
     
 
 
@@ -92,16 +93,30 @@ const Books = () => {
     </div>
     <div>
     </div>
+      { isAuthenticated() && 
       <div className="card-container">
-        <>
-          { isAuthenticated() && books.map((book) => (
-              <React.Fragment key={book.id}>
-              <BookCard book={book} userRating={getUserRankingForBook(book.id)}/>
-              </React.Fragment>
-          ))}
-          { !isAuthenticated() && booksWithCharacteristics.map((bc) => ( <BookWithCharacteristicsCard bookWithCharacteristics={bc} key={bc.book.id}/> ))}
-        </>
-      </div>
+        { isAuthenticated() && books.map((book) => (
+            <React.Fragment key={book.id}>
+            <BookCard book={book} userRating={getUserRankingForBook(book.id)}/>
+            </React.Fragment>
+        ))}
+      </div> }
+      { !isAuthenticated() && 
+      <Container>
+        <Grid container spacing={2} sx={{ mt: 3}}>
+          <Grid item lg={6}>
+            { booksWithCharacteristics
+                .filter(bc => !bc.suggested)
+                .map(bc => (<BookWithCharacteristicsCard bookWithCharacteristics={bc} key={bc.book.id}/>)) }
+            </Grid>
+          <Grid item lg={6}>
+              { booksWithCharacteristics
+                .filter(bc => bc.suggested)
+                .map(bc => (<BookWithCharacteristicsCard bookWithCharacteristics={bc} key={bc.book.id}/>)) }
+          </Grid>
+        </Grid>
+      </Container> 
+      }
     </div>
   );
 };
