@@ -15,11 +15,17 @@ import { useIsAuthenticated } from "react-auth-kit";
 import { toast } from "react-toastify";
 import { BookWithCharacteristics } from "../model/bookWithCharacteristics";
 import BookWithCharacteristicsCard from "../components/bookWithCharacteristics-card";
+import { RatingDTO } from "../dto/ratingDTO";
+    
+
 
 const Books = () => {
     const [books, setBooks] = React.useState<Book[]>([]);
     const [booksWithCharacteristics, setBookWithCharacteristics] = React.useState<BookWithCharacteristics[]>([]);
     const isAuthenticated = useIsAuthenticated();
+    const [userRatings, setUserRatings] = React.useState<RatingDTO[]>([]);
+    const [loading, setLoading] = React.useState(true);
+
     
     React.useEffect(() => {
       if (!isAuthenticated()) {
@@ -28,11 +34,18 @@ const Books = () => {
         fetchBooks();
       }
     }, []);
+
+    React.useEffect(() => {
+      if(isAuthenticated())
+        fetchRatings();
+    }, []);
   
     const fetchBooks = async () => {
       const response = await fetch(API_BASE_URL+'/book');
       const data = await response.json();
       setBooks(data);
+      if(!isAuthenticated())
+      setLoading(false)
     }
 
     const fetchBooksWithCharacteristics = async () => {
@@ -50,6 +63,23 @@ const Books = () => {
       }
     }
 
+    const fetchRatings = async () => {
+      const token = document.cookie.match('(^|;)\\s*' + "accessToken" + '\\s*=\\s*([^;]+)')?.pop() || '';
+      const response = await fetch(API_BASE_URL+'/rating/user-ratings', {headers : {'Authorization': `Bearer ${token}`}});
+      const data = await response.json();
+      setUserRatings(data);
+      setLoading(false);
+    }
+
+    const getUserRankingForBook = (bookId: number) => {
+      const rating = userRatings.find((rating) => rating.bookId === bookId);
+      if (rating) {
+        return rating.rating;
+      }
+      return -1;
+    };
+
+
   return (
     <div>
     <div className="home-container">
@@ -66,7 +96,7 @@ const Books = () => {
         <>
           { isAuthenticated() && books.map((book) => (
               <React.Fragment key={book.id}>
-              <BookCard book={book}/>
+              <BookCard book={book} userRating={getUserRankingForBook(book.id)}/>
               </React.Fragment>
           ))}
           { !isAuthenticated() && booksWithCharacteristics.map((bc) => ( <BookWithCharacteristicsCard bookWithCharacteristics={bc} key={bc.book.id}/> ))}
