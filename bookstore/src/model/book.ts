@@ -6,4 +6,5 @@ export interface Book {
     genre?: string;
     numberOfPages?: number;
     price: number;
+    averageRating: number;
   }
