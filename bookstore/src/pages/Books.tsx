@@ -1,28 +1,33 @@
 
 import * as React from "react";
 import BannerBackground from "../images/banner-background.png";
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { API_BASE_URL } from '../config';
 import { Book } from '../model/book';
 import { BookCard } from '../components/book-card';
 import Navbar from "../components/navbar";
 import { useIsAuthenticated } from "react-auth-kit";
+import { toast } from "react-toastify";
+import { BookWithCharacteristics } from "../model/bookWithCharacteristics";
+import BookWithCharacteristicsCard from "../components/bookWithCharacteristics-card";
 import { RatingDTO } from "../dto/ratingDTO";
+import { Container, Grid } from "@mui/material";
+    
+
 
 const Books = () => {
     const [books, setBooks] = React.useState<Book[]>([]);
+    const [booksWithCharacteristics, setBookWithCharacteristics] = React.useState<BookWithCharacteristics[]>([]);
+    const isAuthenticated = useIsAuthenticated();
     const [userRatings, setUserRatings] = React.useState<RatingDTO[]>([]);
-    const isAuthenticated = useIsAuthenticated()
     const [loading, setLoading] = React.useState(true);
 
     
     React.useEffect(() => {
-      fetchBooks();
+      if (!isAuthenticated()) {
+        fetchBooksWithCharacteristics();
+      } else {
+        fetchBooks();
+      }
     }, []);
 
     React.useEffect(() => {
@@ -36,6 +41,21 @@ const Books = () => {
       setBooks(data);
       if(!isAuthenticated())
       setLoading(false)
+    }
+
+    const fetchBooksWithCharacteristics = async () => {
+      try {
+        const response = await fetch(API_BASE_URL+'/book/characteristics');
+        if (!response.ok) {
+          toast.error("Error fetching books", { position: toast.POSITION.TOP_CENTER });
+          return;
+        }
+        const data : BookWithCharacteristics[] = await response.json();
+        setBookWithCharacteristics(data);
+      } catch (error: any) {
+        console.log(error);
+        toast.error("Error fetching books", { position: toast.POSITION.TOP_CENTER });
+      }
     }
 
     const fetchRatings = async () => {
@@ -67,18 +87,30 @@ const Books = () => {
     </div>
     <div>
     </div>
-    <div className="card-container">
-      {loading ? (<p></p>) : (
-
-        books.map((book) => (
+      { isAuthenticated() && 
+      <div className="card-container">
+        { isAuthenticated() && books.map((book) => (
             <React.Fragment key={book.id}>
             <BookCard book={book} userRating={getUserRankingForBook(book.id)}/>
             </React.Fragment>
-        ))
-
-
-        )}
-        </div>
+        ))}
+      </div> }
+      { !isAuthenticated() && 
+      <Container>
+        <Grid container spacing={2} sx={{ mt: 3}}>
+          <Grid item lg={6}>
+            { booksWithCharacteristics
+                .filter(bc => !bc.suggested)
+                .map(bc => (<BookWithCharacteristicsCard bookWithCharacteristics={bc} key={bc.book.id}/>)) }
+            </Grid>
+          <Grid item lg={6}>
+              { booksWithCharacteristics
+                .filter(bc => bc.suggested)
+                .map(bc => (<BookWithCharacteristicsCard bookWithCharacteristics={bc} key={bc.book.id}/>)) }
+          </Grid>
+        </Grid>
+      </Container> 
+      }
     </div>
   );
 };
