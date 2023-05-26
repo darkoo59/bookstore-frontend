@@ -10,15 +10,18 @@ import CommentRoundedIcon  from "@mui/icons-material/CommentRounded";
 import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import { List } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {useIsAuthenticated} from 'react-auth-kit';
 import { useSignOut } from 'react-auth-kit'
 import { useShoppingCart } from "../context/ShoppingCartContext";
+
 const Navbar = () => {
   const {openCart, cartQuantity } = useShoppingCart()
   const isAuthenticated = useIsAuthenticated()
   const signOut = useSignOut()
   const [openMenu, setOpenMenu] = React.useState(false);
+  const navigate = useNavigate();
+
   const menuOptions = [
     {
       text: "Home",
@@ -77,7 +80,7 @@ const Navbar = () => {
             </div>
           </Button>
           ): null}
-          {isAuthenticated() ?<LogoutIcon className="ml-auto" onClick={() => signOut()}></LogoutIcon> : null}
+          {isAuthenticated() ?<LogoutIcon className="ml-auto" onClick={() => { signOut(); navigate('/login'); } }></LogoutIcon> : null}
           <div className="navbar-menu-container">
             <HiOutlineBars3 onClick={() => setOpenMenu(true)}/>
           </div> 

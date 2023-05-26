@@ -1,10 +1,11 @@
 import { useIsAuthenticated } from "react-auth-kit";
-import Navbar from "../components/navbar";
 import BannerBackground from "../images/banner-background.png";
 import BannerImage from "../images/banner-image.png";
 import { FiArrowRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import Navbar from "../components/navbar";
+
 const Home = () => {
     const navigate = useNavigate();
     const isAuthenticated = useIsAuthenticated()
