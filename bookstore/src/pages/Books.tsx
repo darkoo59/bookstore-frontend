@@ -26,7 +26,7 @@ const Books = () => {
     const data = await response.json();
     setBooks(data);
     if (!isAuthenticated()) setLoading(false);
-  }, [isAuthenticated])
+  }, [])
 
   const fetchBooksWithCharacteristics = useCallback(async () => {
     try {
@@ -53,11 +53,11 @@ const Books = () => {
     } else {
       fetchBooks();
     }
-  }, [fetchBooks, isAuthenticated, fetchBooksWithCharacteristics]);
+  }, [fetchBooks, fetchBooksWithCharacteristics]);
 
   React.useEffect(() => {
     if (isAuthenticated()) fetchRatings();
-  }, [isAuthenticated]);
+  }, []);
 
   
 
