@@ -10,6 +10,7 @@ import { BookWithCharacteristics } from "../model/bookWithCharacteristics";
 import BookWithCharacteristicsCard from "../components/bookWithCharacteristics-card";
 import { RatingDTO } from "../dto/ratingDTO";
 import { Container, Grid } from "@mui/material";
+import { useCallback } from "react";
 
 const Books = () => {
   const [books, setBooks] = React.useState<Book[]>([]);
@@ -20,14 +21,14 @@ const Books = () => {
   const [userRatings, setUserRatings] = React.useState<RatingDTO[]>([]);
   const [loading, setLoading] = React.useState(true);
 
-  const fetchBooks = async () => {
+  const fetchBooks = useCallback(async () => {
     const response = await fetch(API_BASE_URL + "/book");
     const data = await response.json();
     setBooks(data);
     if (!isAuthenticated()) setLoading(false);
-  };
+  }, []);
 
-  const fetchBooksWithCharacteristics = async () => {
+  const fetchBooksWithCharacteristics = useCallback(async () => {
     try {
       const response = await fetch(API_BASE_URL + "/book/characteristics");
       if (!response.ok) {
@@ -44,7 +45,7 @@ const Books = () => {
         position: toast.POSITION.TOP_CENTER,
       });
     }
-  };
+  }, []);
 
   React.useEffect(() => {
     if (!isAuthenticated()) {
