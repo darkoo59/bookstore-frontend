@@ -1,17 +1,10 @@
 
 import * as React from "react";
-import BannerBackground from "../images/banner-background.png";
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { API_BASE_URL } from '../config';
-import { Book } from '../model/book';
 import { BookCard } from '../components/book-card';
 import Navbar from "../components/navbar";
-import { useIsAuthenticated } from "react-auth-kit";
+import { API_BASE_URL } from '../config';
+import BannerBackground from "../images/banner-background.png";
+import { Book } from '../model/book';
 
 const Books = () => {
     const [books, setBooks] = React.useState<Book[]>([]);

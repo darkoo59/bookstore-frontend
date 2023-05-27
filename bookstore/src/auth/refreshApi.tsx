@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {useAuthHeader, createRefresh} from 'react-auth-kit'
+import { createRefresh } from 'react-auth-kit'
 import { API_BASE_URL } from '../config'
 
 const refreshApi = createRefresh({
@@ -7,14 +7,12 @@ const refreshApi = createRefresh({
   refreshApiCallback: async (
     {   // arguments
       authToken,
-      authTokenExpireAt,
-      refreshToken,
-      refreshTokenExpiresAt,
-      authUserState
+      refreshToken
     }) => {
     try {
-      const response = await axios.post(API_BASE_URL+'/user/token/refresh', {'refreshToken': refreshToken}, {
-        headers: {'Authorization': `Bearer ${authToken}`}}
+      const response = await axios.post(API_BASE_URL + '/user/token/refresh', { 'refreshToken': refreshToken }, {
+        headers: { 'Authorization': `Bearer ${authToken}` }
+      }
       )
       const newAuthToken = response.data.token as string
       return {
@@ -24,10 +22,10 @@ const refreshApi = createRefresh({
         newRefreshTokenExpiresIn: 60
       }
     }
-    catch(error){
+    catch (error) {
       console.error(error)
       throw new Error('Failed to refresh auth token')
-    }    
+    }
   }
 })
 

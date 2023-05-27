@@ -1,14 +1,10 @@
-import { Book } from "../model/book";
+import { List } from "@mui/material";
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { useIsAuthenticated } from "react-auth-kit";
-import { formatCurrency } from "../utilities/formatCurrency";
-import { Button, List, ListItem } from "@mui/material";
-import { useShoppingCart } from "../context/ShoppingCartContext";
-import { MyOrder } from "../model/my-order";
 import * as React from "react";
+import { MyOrder } from "../model/my-order";
+import { formatCurrency } from "../utilities/formatCurrency";
 
 export function OrderCard({ order } : {order : MyOrder}) {
     return (

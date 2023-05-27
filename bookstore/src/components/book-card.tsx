@@ -1,12 +1,11 @@
-import { Book } from "../model/book";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useIsAuthenticated } from "react-auth-kit";
-import { formatCurrency } from "../utilities/formatCurrency";
-import { Button } from "@mui/material";
 import { useShoppingCart } from "../context/ShoppingCartContext";
+import { Book } from "../model/book";
+import { formatCurrency } from "../utilities/formatCurrency";
 
 export function BookCard({ book } : {book : Book}) {
   const isAuthenticated = useIsAuthenticated()
