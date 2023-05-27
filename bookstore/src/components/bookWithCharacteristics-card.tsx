@@ -22,14 +22,14 @@ const BookWithCharacteristicsCard = ({ bookWithCharacteristics } : BookWithChara
             </Stack> 
           </Stack> 
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            {bookWithCharacteristics.book.genre}
+            {bookWithCharacteristics.book.genre?.name}
           </Typography>
           <Typography variant="h5" component="div" className="d-flex justify-content-between align-items-baseline mb-4">
             {bookWithCharacteristics.book.title}
             <span className="ms-2 text-muted h3">{formatCurrency(bookWithCharacteristics.book.price)}</span>
           </Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {bookWithCharacteristics.book.author}
+            {bookWithCharacteristics.book.author?.name}
           </Typography>
           <Typography variant="body2">
             <i>Publisher: </i>{bookWithCharacteristics.book.publisher}
