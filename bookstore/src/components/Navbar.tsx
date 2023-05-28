@@ -7,15 +7,17 @@ import { Box, Button, Drawer, ListItem, ListItemButton, ListItemIcon, ListItemTe
 import React from "react";
 import { useIsAuthenticated, useSignOut } from 'react-auth-kit';
 import { HiOutlineBars3 } from "react-icons/hi2";
-import { Link } from "react-router-dom";
-import { useShoppingCart } from "../context/ShoppingCartContext";
 import Logo from "../images/logo.png";
+import { Link, useNavigate } from "react-router-dom";
+import { useShoppingCart } from "../context/ShoppingCartContext";
 
 const Navbar = () => {
   const {openCart, cartQuantity } = useShoppingCart()
   const isAuthenticated = useIsAuthenticated()
   const signOut = useSignOut()
   const [openMenu, setOpenMenu] = React.useState(false);
+  const navigate = useNavigate();
+
   const menuOptions = [
     {
       text: "Home",
@@ -74,7 +76,7 @@ const Navbar = () => {
             </div>
           </Button>
           ): null}
-          {isAuthenticated() ?<LogoutIcon className="ml-auto" onClick={() => signOut()}></LogoutIcon> : null}
+          {isAuthenticated() ?<LogoutIcon className="ml-auto" onClick={() => { signOut(); navigate('/login'); } }></LogoutIcon> : null}
           <div className="navbar-menu-container">
             <HiOutlineBars3 onClick={() => setOpenMenu(true)}/>
           </div> 

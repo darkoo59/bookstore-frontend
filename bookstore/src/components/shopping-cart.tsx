@@ -17,11 +17,11 @@ import { formatCurrency } from "../utilities/formatCurrency";
 import { CartItem } from './cart-item';
 
 type ShoppingCartProps = {
-  isOpen: boolean
-}
+  isOpen: boolean;
+};
 
 export function ShoppingCart({ isOpen }: ShoppingCartProps) {
-  const { closeCart, cartItems } = useShoppingCart()
+  const { closeCart, cartItems } = useShoppingCart();
   const [books, setBooks] = React.useState<Book[]>([]);
   const [discount, setDiscount] = React.useState<DiscountDTO>({ price: 0.0, discountReason: undefined });
   const isAuthenticated = useIsAuthenticated()
@@ -34,7 +34,7 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
     if (isAuthenticated()) {
       fetchDiscount();
     }
-  }, [closeCart])
+  }, [closeCart]);
 
   const fetchBooks = async () => {
     const response = await fetch(API_BASE_URL + '/book');
@@ -43,7 +43,7 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
   }
 
   const fetchDiscount = async () => {
-    const items = []
+    const items = [];
     for (let i = 0; i < books.length; i++) {
       const item = {
         book: books[i],
@@ -53,7 +53,10 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
       if (item.quantity)
         items.push(item);
     }
-    const token = document.cookie.match('(^|;)\\s*' + "accessToken" + '\\s*=\\s*([^;]+)')?.pop() || '';
+    const token =
+      document.cookie
+        .match("(^|;)\\s*" + "accessToken" + "\\s*=\\s*([^;]+)")
+        ?.pop() || "";
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -97,26 +100,47 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
   }
 
   const makeDeliveryPaymentOrder = async () => {
-    const items = []
+    const items = [];
     for (let i = 0; i < books.length; i++) {
       const item = {
         bookId: books[i].id,
-        quantity: cartItems.find(j => j.id === books[i].id)?.quantity,
-        price: books[i].price
+        quantity: cartItems.find((j) => j.id === books[i].id)?.quantity,
+        price: books[i].price,
       };
-      if (item.quantity)
-        items.push(item);
+      if (item.quantity) items.push(item);
     }
-
+    const token =
+      document.cookie
+        .match("(^|;)\\s*" + "accessToken" + "\\s*=\\s*([^;]+)")
+        ?.pop() || "";
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        items: items,
+        totalPrice: discount.price,
+      }),
+    };
     try {
-      toast.success('Order made succcessfully!', { position: toast.POSITION.BOTTOM_CENTER });
+      const response = await fetch(
+        API_BASE_URL + "/order/delivery-payment",
+        requestOptions
+      );
+      toast.success("Order made succcessfully!", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<string>;
-        toast.error(axiosError.response?.data, { position: toast.POSITION.BOTTOM_CENTER });
+        toast.error(axiosError.response?.data, {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
       }
     }
-  }
+  };
 
   return (
     <Drawer anchor="right" open={isOpen} onClose={closeCart} PaperProps={{ style: { width: '25%' } }} >
