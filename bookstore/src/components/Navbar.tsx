@@ -1,18 +1,14 @@
-import React from "react";
-import Logo from "../images/logo.png";
-import { BsCart2 } from "react-icons/bs";
-import { HiOutlineBars3 } from "react-icons/hi2";
-import { Box, Button, Drawer, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
-import HomeIcon  from "@mui/icons-material/Home";
+import { List } from "@mui/icons-material";
+import HomeIcon from "@mui/icons-material/Home";
 import InfoIcon from "@mui/icons-material/Info";
 import LogoutIcon from '@mui/icons-material/Logout';
-import CommentRoundedIcon  from "@mui/icons-material/CommentRounded";
-import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
-import { List } from "@mui/icons-material";
+import { Box, Button, Drawer, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import React from "react";
+import { useIsAuthenticated, useSignOut } from 'react-auth-kit';
+import { HiOutlineBars3 } from "react-icons/hi2";
+import Logo from "../images/logo.png";
 import { Link, useNavigate } from "react-router-dom";
-import {useIsAuthenticated} from 'react-auth-kit';
-import { useSignOut } from 'react-auth-kit'
 import { useShoppingCart } from "../context/ShoppingCartContext";
 
 const Navbar = () => {

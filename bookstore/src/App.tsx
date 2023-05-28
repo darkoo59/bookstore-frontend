@@ -1,23 +1,20 @@
-import React from 'react';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import './App.css';
-import "bootstrap/dist/css/bootstrap.min.css"
-import Home from './pages/Home';
-import Books from './pages/Books';
+import "bootstrap/dist/css/bootstrap.min.css";
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import Registration from './pages/Registration';
-import Login from './pages/Login';
-import { RequireAuth } from 'react-auth-kit';
-import { ShoppingCartProvider } from './context/ShoppingCartContext';
+import './App.css';
 import './auth/axiosConfig';
+import { ShoppingCartProvider } from './context/ShoppingCartContext';
+import Books from './pages/Books';
+import Home from './pages/Home';
+import Login from './pages/Login';
 import MyOrders from './pages/MyOrders';
-
+import Registration from './pages/Registration';
 
 const router = createBrowserRouter([
   {

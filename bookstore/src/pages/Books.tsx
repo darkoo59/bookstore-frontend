@@ -1,9 +1,8 @@
 import * as React from "react";
+import { BookCard } from '../components/book-card';
 import BannerBackground from "../images/banner-background.png";
+import { Book } from '../model/book';
 import { API_BASE_URL } from "../config";
-import { Book } from "../model/book";
-import { BookCard } from "../components/book-card";
-import Navbar from "../components/navbar";
 import { useIsAuthenticated } from "react-auth-kit";
 import { toast } from "react-toastify";
 import { BookWithCharacteristics } from "../model/bookWithCharacteristics";
@@ -11,6 +10,7 @@ import BookWithCharacteristicsCard from "../components/bookWithCharacteristics-c
 import { RatingDTO } from "../dto/ratingDTO";
 import { Container, Grid } from "@mui/material";
 import { useCallback } from "react";
+import Navbar from "../components/navbar";
 
 const Books = () => {
   const [books, setBooks] = React.useState<Book[]>([]);

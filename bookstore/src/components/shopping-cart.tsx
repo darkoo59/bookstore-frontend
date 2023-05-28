@@ -1,20 +1,20 @@
-import React from "react";
-import { useShoppingCart } from "../context/ShoppingCartContext";
-import { formatCurrency } from "../utilities/formatCurrency";
-import { Drawer, Stack } from "@mui/material";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import CloseIcon from "@mui/icons-material/Close";
-import { CartItem } from "./cart-item";
-import { Book } from "../model/book";
-import { API_BASE_URL } from "../config";
-import { DiscountDTO } from "../dto/discountDTO";
-import { useIsAuthenticated } from "react-auth-kit";
+import CloseIcon from '@mui/icons-material/Close';
 import InfoIcon from "@mui/icons-material/Info";
-import axios, { AxiosError } from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { Drawer, Stack } from '@mui/material';
+import AppBar from '@mui/material/AppBar';
+import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import axios, { AxiosError } from 'axios';
+import React from 'react';
+import { useIsAuthenticated } from "react-auth-kit";
+import { ToastContainer, toast } from 'react-toastify';
+import { API_BASE_URL } from '../config';
+import { useShoppingCart } from "../context/ShoppingCartContext";
+import { DiscountDTO } from '../dto/discountDTO';
+import { Book } from '../model/book';
+import { formatCurrency } from "../utilities/formatCurrency";
+import { CartItem } from './cart-item';
 
 type ShoppingCartProps = {
   isOpen: boolean;
@@ -23,11 +23,8 @@ type ShoppingCartProps = {
 export function ShoppingCart({ isOpen }: ShoppingCartProps) {
   const { closeCart, cartItems } = useShoppingCart();
   const [books, setBooks] = React.useState<Book[]>([]);
-  const [discount, setDiscount] = React.useState<DiscountDTO>({
-    finalPrice: 0.0,
-    message: undefined,
-  });
-  const isAuthenticated = useIsAuthenticated();
+  const [discount, setDiscount] = React.useState<DiscountDTO>({ price: 0.0, discountReason: undefined });
+  const isAuthenticated = useIsAuthenticated()
 
   React.useEffect(() => {
     fetchBooks();
@@ -40,60 +37,67 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
   }, [closeCart]);
 
   const fetchBooks = async () => {
-    const response = await fetch(API_BASE_URL + "/book");
+    const response = await fetch(API_BASE_URL + '/book');
     const data = await response.json();
     setBooks(data);
-  };
+  }
 
   const fetchDiscount = async () => {
     const items = [];
     for (let i = 0; i < books.length; i++) {
-      console.log("nova knjigaa");
       const item = {
-        bookId: books[i].id,
-        quantity: cartItems.find((j) => j.id === books[i].id)?.quantity,
-        price: books[i].price,
+        book: books[i],
+        quantity: cartItems.find(j => j.id === books[i].id)?.quantity,
+        price: books[i].price
       };
-      if (item.quantity) items.push(item);
+      if (item.quantity)
+        items.push(item);
     }
     const token =
       document.cookie
         .match("(^|;)\\s*" + "accessToken" + "\\s*=\\s*([^;]+)")
         ?.pop() || "";
     const requestOptions = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify({
         items: items,
         totalPrice: cartItems.reduce((total, cartItem) => {
-          const item = books.find((i) => i.id === cartItem.id);
-          return total + (item?.price || 0) * cartItem.quantity;
+          const item = books.find(i => i.id === cartItem.id)
+          return total + (item?.price || 0) * cartItem.quantity
         }, 0),
       }),
     };
-    const response = await fetch(
-      API_BASE_URL + "/order/discount",
-      requestOptions
-    );
-    const data = await response.json();
-    setDiscount(data);
-  };
 
-  const removeFromCart = () => {
-    fetchDiscount();
-    closeCart();
-  };
+    try {
+      const response = await fetch(API_BASE_URL + '/order/discount', requestOptions);
+      if (response.ok) {
+        const data = await response.json();
+        const updatedDiscount: DiscountDTO = {
+          price: data.price,
+          discountReason: data.discountReason,
+        };
+        setDiscount(updatedDiscount);
+      } else {
+        toast.warn(
+          'Oops! Something went wrong on our end. We apologize for the inconvenience. Please try again later or contact our support team for assistance.', 
+          { position: toast.POSITION.BOTTOM_CENTER }
+        );
+      }
+    } catch (error) {}
+
+  }
 
   const printMessage = () => {
-    let messageString = "";
-    discount.message?.map((message) => {
-      messageString += `${message}\n`;
+    let messages = "";
+    discount.discountReason?.map(message => {
+      messages += `${message}\n`;
     });
-    return messageString;
-  };
+    return messages;
+  }
 
   const makeDeliveryPaymentOrder = async () => {
     const items = [];
@@ -117,7 +121,7 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
       },
       body: JSON.stringify({
         items: items,
-        totalPrice: discount.finalPrice,
+        totalPrice: discount.price,
       }),
     };
     try {
@@ -125,7 +129,7 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
         API_BASE_URL + "/order/delivery-payment",
         requestOptions
       );
-      toast.success("Order maked succcessfully!", {
+      toast.success("Order made succcessfully!", {
         position: toast.POSITION.BOTTOM_CENTER,
       });
     } catch (err: unknown) {
@@ -139,12 +143,7 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
   };
 
   return (
-    <Drawer
-      anchor="right"
-      open={isOpen}
-      onClose={closeCart}
-      PaperProps={{ style: { width: "25%" } }}
-    >
+    <Drawer anchor="right" open={isOpen} onClose={closeCart} PaperProps={{ style: { width: '25%' } }} >
       <ToastContainer />
       <AppBar position="static">
         <Toolbar>
@@ -162,38 +161,28 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
         </Toolbar>
       </AppBar>
       <Stack gap={3}>
-        {cartItems.map((item) => (
+        {cartItems.map(item => (
           <CartItem key={item.id} {...item} />
         ))}
         <div className="ms-auto fw-bold fs-8">
-          Total:{" "}
-          {formatCurrency(
-            cartItems.reduce((total, cartItem) => {
-              const item = books.find((i) => i.id === cartItem.id);
-              return total + (item?.price || 0) * cartItem.quantity;
-            }, 0)
-          )}
+          Total:   {formatCurrency(cartItems.reduce((total, cartItem) => {
+            const item = books.find(i => i.id === cartItem.id)
+            return total + (item?.price || 0) * cartItem.quantity
+          }, 0))}
         </div>
 
-        {discount.message != undefined && discount.message[0] != "" ? (
-          <div className="d-flex align-items-center ms-auto">
-            <div className="me-2 fw-bold fs-4">
-              <InfoIcon titleAccess={printMessage()} />
-            </div>
-            <div className="fw-bold fs-4">
-              After discount: {formatCurrency(discount.finalPrice)}
-            </div>
+        {discount.discountReason !== undefined && discount.discountReason.length !== 0 ? <div className="d-flex align-items-center ms-auto">
+          <div className="me-2 fw-bold fs-4">
+            <InfoIcon titleAccess= { printMessage() } />
           </div>
-        ) : null}
+          <div className="fw-bold fs-4">
+            After discount: {formatCurrency(discount.price)}
+          </div>
+        </div> : null}
         <div className="d-flex align-items-center ms-auto">
-          <button
-            className="secondary-button"
-            onClick={makeDeliveryPaymentOrder}
-          >
-            Delivery payment
-          </button>
+          <button className="secondary-button" onClick={makeDeliveryPaymentOrder}>Delivery payment</button>
         </div>
       </Stack>
     </Drawer>
-  );
+  )
 }
