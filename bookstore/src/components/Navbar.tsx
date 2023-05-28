@@ -1,9 +1,17 @@
 import { List } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Drawer,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import InfoIcon from "@mui/icons-material/Info";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
-import { Box, Button, Drawer, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import React from "react";
 import { useIsAuthenticated, useSignOut } from 'react-auth-kit';
 import { HiOutlineBars3 } from "react-icons/hi2";
@@ -12,43 +20,54 @@ import { Link, useNavigate } from "react-router-dom";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 
 const Navbar = () => {
-  const {openCart, cartQuantity } = useShoppingCart()
-  const isAuthenticated = useIsAuthenticated()
-  const signOut = useSignOut()
+  const { openCart, cartQuantity } = useShoppingCart();
+  const isAuthenticated = useIsAuthenticated();
+  const signOut = useSignOut();
   const [openMenu, setOpenMenu] = React.useState(false);
   const navigate = useNavigate();
 
   const menuOptions = [
     {
       text: "Home",
-      icon:<HomeIcon/>
+      icon: <HomeIcon />,
     },
     {
       text: "About",
-      icon: <InfoIcon/>
+      icon: <InfoIcon />,
     },
     {
       text: "Cart",
-      icon: <ShoppingCartRoundedIcon/>
-    }
-  ]
+      icon: <ShoppingCartRoundedIcon />,
+    },
+  ];
 
-    return (
-      <nav>
-        <div className="nav-logo-container">
-        <img className="logo-resized" src={Logo} alt=""/>
-        </div>
-        <div className="navbar-links-container">
-          <Link to="/">Home</Link>
-          {/* {isAuthenticated() ? <Link to="/books">Books</Link> : null} */}
-          <Link to="/books">Books</Link>
-          {!isAuthenticated() ? <Link to="/registration">Registration</Link> : null}
-          {!isAuthenticated() ? <Link to="/login">Login</Link> : null}
-          {isAuthenticated() ? <Link to="/orders">My orders</Link> : null}
-          {isAuthenticated() && cartQuantity > 0 ?(
+  return (
+    <nav>
+      <div className="nav-logo-container">
+        <img className="logo-resized" src={Logo} alt="" />
+      </div>
+      <div className="navbar-links-container">
+        <Link to="/">Home</Link>
+        {/* {isAuthenticated() ? <Link to="/books">Books</Link> : null} */}
+        <Link to="/books">Books</Link>
+        {!isAuthenticated() ? (
+          <Link to="/registration">Registration</Link>
+        ) : null}
+        {!isAuthenticated() ? <Link to="/login">Login</Link> : null}
+        {isAuthenticated() ? <Link to="/orders">My orders</Link> : null}
+        {isAuthenticated() && (
+          <Link to="/recommendations">Recommendations</Link>
+        )}
+        {isAuthenticated() && cartQuantity > 0 ? (
           <Button
             onClick={openCart}
-            style={{ width: "3rem", height: "3rem", position: "relative", color: 'black', marginRight: '25px' }}
+            style={{
+              width: "3rem",
+              height: "3rem",
+              position: "relative",
+              color: "black",
+              marginRight: "25px",
+            }}
             variant="outlined"
             className="rounded-circle"
           >
@@ -75,30 +94,45 @@ const Navbar = () => {
               {cartQuantity}
             </div>
           </Button>
-          ): null}
-          {isAuthenticated() ?<LogoutIcon className="ml-auto" onClick={() => { signOut(); navigate('/login'); } }></LogoutIcon> : null}
-          <div className="navbar-menu-container">
-            <HiOutlineBars3 onClick={() => setOpenMenu(true)}/>
-          </div> 
-          <Drawer open={openMenu} onClose={() => setOpenMenu(false)} anchor="right">
-            <Box sx={{width: 250}} role="presentation" onClick={()=>setOpenMenu(false)} onKeyDown={() => setOpenMenu(false)}>
-              <List>
-                {
-                  menuOptions.map((item) => (
-                    <ListItem key={item.text} disablePadding>
-                        <ListItemButton>
-                          <ListItemIcon>{item.icon}</ListItemIcon>
-                          <ListItemText primary={item.text}/>
-                        </ListItemButton>
-                    </ListItem>
-                  ))
-                }
-              </List>
-            </Box>
-          </Drawer>
-          </div>
-      </nav>
-          );
-  };
-  
-  export default Navbar;
+        ) : null}
+        {isAuthenticated() ? (
+          <LogoutIcon
+            className="ml-auto"
+            onClick={() => {
+              signOut();
+              navigate("/login");
+            }}
+          ></LogoutIcon>
+        ) : null}
+        <div className="navbar-menu-container">
+          <HiOutlineBars3 onClick={() => setOpenMenu(true)} />
+        </div>
+        <Drawer
+          open={openMenu}
+          onClose={() => setOpenMenu(false)}
+          anchor="right"
+        >
+          <Box
+            sx={{ width: 250 }}
+            role="presentation"
+            onClick={() => setOpenMenu(false)}
+            onKeyDown={() => setOpenMenu(false)}
+          >
+            <List>
+              {menuOptions.map((item) => (
+                <ListItem key={item.text} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.text} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Drawer>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;

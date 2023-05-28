@@ -1,6 +1,8 @@
 import { Address } from "./address";
+import { Genre } from "./genre";
 
 export interface User {
+  id?: number;
   email?: string;
   password?: string;
   firstname?: string;
@@ -11,4 +13,5 @@ export interface User {
   nationalId?: string;
   occupation?: string;
   information?: string;
+  genres?: Genre[]
 }
