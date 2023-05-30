@@ -83,11 +83,11 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
         setDiscount(updatedDiscount);
       } else {
         toast.warn(
-          'Oops! Something went wrong on our end. We apologize for the inconvenience. Please try again later or contact our support team for assistance.', 
+          'Oops! Something went wrong on our end. We apologize for the inconvenience. Please try again later or contact our support team for assistance.',
           { position: toast.POSITION.BOTTOM_CENTER }
         );
       }
-    } catch (error) {}
+    } catch (error) { }
 
   }
 
@@ -113,21 +113,20 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
       document.cookie
         .match("(^|;)\\s*" + "accessToken" + "\\s*=\\s*([^;]+)")
         ?.pop() || "";
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        items: items,
-        totalPrice: discount.price,
-      }),
-    };
+
     try {
-      const response = await fetch(
+      await axios.post(
         API_BASE_URL + "/order/delivery-payment",
-        requestOptions
+        {
+          items: items,
+          totalPrice: discount.price
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       toast.success("Order made succcessfully!", {
         position: toast.POSITION.BOTTOM_CENTER,
@@ -173,7 +172,7 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
 
         {discount.discountReason !== undefined && discount.discountReason.length !== 0 ? <div className="d-flex align-items-center ms-auto">
           <div className="me-2 fw-bold fs-4">
-            <InfoIcon titleAccess= { printMessage() } />
+            <InfoIcon titleAccess={printMessage()} />
           </div>
           <div className="fw-bold fs-4">
             After discount: {formatCurrency(discount.price)}
