@@ -18,6 +18,7 @@ export const Recommendations = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [user, setUser] = useState<User | null>(null);
+  const [numberOfRatings, setNumberOfUserRatings] = useState<number>(0);
 
   const fetchBooks = async () => {
     setBooks([]);
@@ -50,10 +51,21 @@ export const Recommendations = () => {
     } catch (err) {}
   };
 
+  const fetchNumberOfRatings = async () => {
+    const token = getToken();
+    try {
+      const res = await axios.get(`${API_BASE_URL}/rating/number-of-ratings`, {
+        headers: { Authorization: `Bearer ${token}`},
+      });
+      setNumberOfUserRatings(res.data);
+    } catch(err) {}
+  };
+
   useEffect(() => {
     fetchUserData();
     fetchBooks();
     fetchGenres();
+    fetchNumberOfRatings();
   }, []);
 
   const getOwnRating = (bookId: number): Rating | null | undefined => {
@@ -89,11 +101,12 @@ export const Recommendations = () => {
       </div>
       {isAuthenticated() && (
         <>
+        {numberOfRatings < 10 ? (
           <FavouriteGenres
             allGenres={genres}
             favourites={user?.genres ?? []}
             handleUpdate={handleUpdate}
-          />
+          />) : null}
           <div className="card-container">
             {books.map((book, index) => (
               <BookCard

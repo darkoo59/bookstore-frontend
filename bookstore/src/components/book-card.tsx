@@ -100,13 +100,7 @@ export function BookCard({
           <i>Average rating: </i>
           {bookToPresent.averageRating}
         </Typography>
-        <Rating
-          name="size-small"
-          defaultValue={bookToPresent.averageRating}
-          precision={0.1}
-          disabled
-        />
-        {isAuthenticated() ? (
+        {isAuthenticated() && rating!= -1 ? (
           <div>
             <Typography variant="body2">
               <i>Your rating: </i>
@@ -120,10 +114,10 @@ export function BookCard({
             />
           </div>
         ) : null}
-        {isAuthenticated() ? (
+        {isAuthenticated() && rating == -1 ? (
           <div style={{ marginTop: "3%" }}>
             <Typography>
-              <i>Rate again:</i>
+              <i>Rate this book:</i>
             </Typography>
             <Rating
               name="size-small"
