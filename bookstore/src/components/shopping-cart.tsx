@@ -9,12 +9,13 @@ import axios, { AxiosError } from 'axios';
 import React from 'react';
 import { useIsAuthenticated } from "react-auth-kit";
 import { ToastContainer, toast } from 'react-toastify';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, BANK_ACCOUNT_NUMBER } from '../config';
 import { useShoppingCart } from "../context/ShoppingCartContext";
 import { DiscountDTO } from '../dto/discountDTO';
 import { Book } from '../model/book';
 import { formatCurrency } from "../utilities/formatCurrency";
 import { CartItem } from './cart-item';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 
 type ShoppingCartProps = {
   isOpen: boolean;
@@ -25,6 +26,24 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
   const [books, setBooks] = React.useState<Book[]>([]);
   const [discount, setDiscount] = React.useState<DiscountDTO>({ price: 0.0, discountReason: undefined });
   const isAuthenticated = useIsAuthenticated()
+  const [open, setOpen] = React.useState(false);
+
+  const [formData, setFormData] = React.useState({
+    accountNumber: BANK_ACCOUNT_NUMBER,
+    ownerName: "",
+    amount: discount.price,
+    creditCardNumber: "",
+    expirationDate: "",
+    cvv_cvc: "",
+  });
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   React.useEffect(() => {
     fetchBooks();
@@ -81,6 +100,14 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
           discountReason: data.discountReason,
         };
         setDiscount(updatedDiscount);
+        setFormData({
+          accountNumber: BANK_ACCOUNT_NUMBER,
+          amount: data.price,
+          creditCardNumber: "",
+          expirationDate: "",
+          cvv_cvc: "",
+          ownerName: ""
+        });
       } else {
         toast.warn(
           'Oops! Something went wrong on our end. We apologize for the inconvenience. Please try again later or contact our support team for assistance.',
@@ -97,6 +124,10 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
       messages += `${message}\n`;
     });
     return messages;
+  }
+
+  const makeCreditCardPaymentOrder = async () => {
+    console.log('darko')
   }
 
   const makeDeliveryPaymentOrder = async () => {
@@ -140,8 +171,50 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
       }
     }
   };
+  
+  const handlePay = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8081/transaction", // Replace with your actual endpoint
+        {
+          ...formData,
+          // Add any additional data you need to send to the server
+        },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+  
+      // Handle the response as needed
+      console.log(response.data);
+  
+      // Reset the form data and close the dialog
+      setFormData({
+        accountNumber: BANK_ACCOUNT_NUMBER,
+        amount: 0.0,
+        creditCardNumber: "",
+        expirationDate: "",
+        cvv_cvc: "",
+        ownerName: ""
+      });
+      setOpen(false);
+      toast.success("Transaction made successfully", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+  
+    } catch (err) {
+      // Handle any errors
+      toast.error("Can't make transaction right now!", {
+        position: toast.POSITION.TOP_CENTER, 
+    });
+  }
+  };
 
   return (
+    <div>
+      <ToastContainer />
     <Drawer anchor="right" open={isOpen} onClose={closeCart} PaperProps={{ style: { width: '25%' } }} >
       <ToastContainer />
       <AppBar position="static">
@@ -180,8 +253,92 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
         </div> : null}
         <div className="d-flex align-items-center ms-auto">
           <button className="secondary-button" onClick={makeDeliveryPaymentOrder}>Delivery payment</button>
+          <button className="secondary-button" onClick={handleClickOpen}>Credit card payment</button>
         </div>
       </Stack>
     </Drawer>
+    <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Enter your payment details</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Recipient account number"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={formData.accountNumber}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Amount of money"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={formData.amount}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            label="Credit card number"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={formData.creditCardNumber}
+            onChange={(e) => setFormData({...formData, creditCardNumber: e.target.value})}
+          />
+          <TextField
+            autoFocus
+            required
+            id="name"
+            label="Expiration date"
+            type="date"
+            fullWidth
+            variant="standard"
+            value={formData.expirationDate}
+            onChange={(e) => setFormData({...formData, expirationDate: e.target.value})}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            label="CVV/CVC"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={formData.cvv_cvc}
+            onChange={(e) => setFormData({...formData, cvv_cvc: e.target.value})}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            label="Name of the owner"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={formData.ownerName}
+            onChange={(e) => setFormData({...formData, ownerName: e.target.value})}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handlePay}>Pay</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   )
 }
