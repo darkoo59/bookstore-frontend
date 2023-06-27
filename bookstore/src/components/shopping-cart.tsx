@@ -16,6 +16,7 @@ import { Book } from '../model/book';
 import { formatCurrency } from "../utilities/formatCurrency";
 import { CartItem } from './cart-item';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
+import { Category } from '@mui/icons-material';
 
 type ShoppingCartProps = {
   isOpen: boolean;
@@ -27,11 +28,23 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
   const [discount, setDiscount] = React.useState<DiscountDTO>({ price: 0.0, discountReason: undefined });
   const isAuthenticated = useIsAuthenticated()
   const [open, setOpen] = React.useState(false);
+  const [ip, setIP] = React.useState("");
+
+  const getIpAddress = async () => {
+    const res = await axios.get("https://api.ipify.org/?format=json");
+    console.log(res.data);
+    setIP(res.data.ip);
+  };
 
   const [formData, setFormData] = React.useState({
     accountNumber: BANK_ACCOUNT_NUMBER,
     ownerName: "",
-    amount: discount.price,
+    amount: discount.price === 0
+    ? cartItems.reduce((total, cartItem) => {
+        const item = books.find(i => i.id === cartItem.id);
+        return total + ((item?.price || 0) * cartItem.quantity);
+      }, 0)
+    : discount.price,
     creditCardNumber: "",
     expirationDate: "",
     cvv_cvc: "",
@@ -54,6 +67,10 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
       fetchDiscount();
     }
   }, [closeCart]);
+
+  React.useEffect(() => {
+    getIpAddress()
+  }, [])
 
   const fetchBooks = async () => {
     const response = await fetch(API_BASE_URL + '/book');
@@ -102,11 +119,16 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
         setDiscount(updatedDiscount);
         setFormData({
           accountNumber: BANK_ACCOUNT_NUMBER,
-          amount: data.price,
+          ownerName: "",
+          amount: discount.price === 0
+          ? cartItems.reduce((total, cartItem) => {
+              const item = books.find(i => i.id === cartItem.id);
+              return total + ((item?.price || 0) * cartItem.quantity);
+            }, 0)
+          : discount.price,
           creditCardNumber: "",
           expirationDate: "",
           cvv_cvc: "",
-          ownerName: ""
         });
       } else {
         toast.warn(
@@ -175,41 +197,37 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
   const handlePay = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8081/transaction", // Replace with your actual endpoint
+        "http://localhost:8081/api/transaction", // Replace with your actual endpoint
         {
           ...formData,
           // Add any additional data you need to send to the server
         },
         {
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "X-Forwarded-For": ip
           }
+        });
+        setOpen(false);
+        toast.success("Transaction made successfully", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setFormData({
+          accountNumber: BANK_ACCOUNT_NUMBER,
+          amount: discount.price,
+          creditCardNumber: "",
+          expirationDate: "",
+          cvv_cvc: "",
+          ownerName: ""
+        });
+    }
+      catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          toast.error(err.response?.data.error, {
+            position: toast.POSITION.BOTTOM_CENTER,
+          });
         }
-      );
-  
-      // Handle the response as needed
-      console.log(response.data);
-  
-      // Reset the form data and close the dialog
-      setFormData({
-        accountNumber: BANK_ACCOUNT_NUMBER,
-        amount: 0.0,
-        creditCardNumber: "",
-        expirationDate: "",
-        cvv_cvc: "",
-        ownerName: ""
-      });
-      setOpen(false);
-      toast.success("Transaction made successfully", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-  
-    } catch (err) {
-      // Handle any errors
-      toast.error("Can't make transaction right now!", {
-        position: toast.POSITION.TOP_CENTER, 
-    });
-  }
+      }
   };
 
   return (
@@ -220,7 +238,6 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Store
           </Typography>
           <IconButton
             edge="end"
