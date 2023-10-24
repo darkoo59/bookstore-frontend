@@ -30,7 +30,7 @@ Here're some of the project's best features:
 <p>1. Cloning a repository</p>
 
 ```
-git clone https://github.com/darkoo59/bookstore-public.git
+git clone https://github.com/darkoo59/bookstore-frontend-rule-based.git
 ```
 
 <p>2. Starting public project</p>
